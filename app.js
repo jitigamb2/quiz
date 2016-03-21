@@ -1,18 +1,4 @@
-var app = angular.module('quizApp', ['ui.router', 'firebase']);
-
-app.run(function ($rootScope, $state) {
-	
-	$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
-		console.log('error', error);
-	});
-	
-	$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-		if(toState.name === 'quiz') {
-			event.preventDefault();
-			$state.go('quiz.view', toParams)
-		}
-	})
-});
+var app = angular.module('quizApp', ['ui.router']);
 
 app.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -22,23 +8,25 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 		.state('home', {
 			url: '/',
 			templateUrl: 'components/home/homeView.html',
-			controller: 'HomeCtrl',
+			controller: 'homeCtrl',
 			resolve: {
 				quizList: function (quizService) {
+					console.log(quizService);
 					return quizService.getQuizNames();
 				},
 				pastQuizList: function (quizService) {
-					return quizService.getPastQuizzes();
+					//return quizService.getPastQuizzes();
 				}
 			}
 		})
 		.state('quiz', {
 			url: '/quiz/:quizName',
 			templateUrl: 'components/quiz/views/quizContainerView.html',
-			controller: 'QuizCtrl',
+			controller: 'quizCtrl',
 			resolve: {
 				questions: function (quizService, $stateParams) {
-					var name = $stateParams.quizName
+					console.log($stateParams.quizName);
+					var name = $stateParams.quizName;
 					return quizService.getQuestions(name);
 				}
 			},
@@ -74,7 +62,19 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 				} 	
 			}
 		})
-
 })
 
 
+// app.run(function ($rootScope, $state) {
+	
+// 	$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+// 		console.log('error', error);
+// 	});
+	
+// 	$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+// 		if(toState.name === 'quiz') {
+// 			event.preventDefault();
+// 			$state.go('quiz.view', toParams)
+// 		}
+// 	})
+// });
